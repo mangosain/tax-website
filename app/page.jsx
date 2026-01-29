@@ -10,12 +10,7 @@ import FAQSection from "../components/faq/page";
 import Footer from "../components/footer/page";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  signInAnonymously,
-  onAuthStateChanged,
-  signInWithCustomToken,
-} from "firebase/auth";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import {
   getFirestore,
   collection,
