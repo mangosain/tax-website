@@ -25,12 +25,12 @@ import {
 
 // --- FIREBASE CONFIGURATION ---
 const firebaseConfig = {
-  apiKey: "AIzaSyAQjE1VDakVB5fd4m_8Y3z0WxQghdlx7So",
-  authDomain: "tax-website-8f42f.firebaseapp.com",
-  projectId: "tax-website-8f42f",
-  storageBucket: "tax-website-8f42f.firebasestorage.app",
-  messagingSenderId: "323971199499",
-  appId: "1:323971199499:web:154c916e49579c0c51cd0e",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
@@ -182,9 +182,9 @@ const ContactSection = ({ user }) => {
     }
 
     // 2. SEND VIA EMAILJS
-    const SERVICE_ID = "service_vo7xf1n";
-    const TEMPLATE_ID = "template_ft84p4a";
-    const PUBLIC_KEY = "f3ZMaRAvTx9ned5Qh";
+    const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
     const templateParams = {
       email: form.email,
