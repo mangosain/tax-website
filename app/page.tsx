@@ -91,19 +91,11 @@ const App = () => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        if (
-          typeof __initial_auth_token !== "undefined" &&
-          __initial_auth_token
-        ) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          await signInAnonymously(auth);
-        }
+        // Simplified auth for production environment
+        // We removed the __initial_auth_token check
+        await signInAnonymously(auth);
       } catch (error) {
         console.warn("Auth fallback:", error);
-        try {
-          await signInAnonymously(auth);
-        } catch (e) {}
       }
     };
     initAuth();
