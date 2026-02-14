@@ -6,7 +6,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import HeroSection from '@/components/hero/page';
-import ServicesSection from '@/components/servies/page';
+import ServicesSection from '@/components/services/page';
 import AboutSection from '@/components/about/page';
 import TaxCalculatorSection from '@/components/calculator/page';
 import FAQSection from '@/components/faq/page';
@@ -194,7 +194,7 @@ const App = () => {
   );
 };
 
-// --- SECTIONS ---
+
 const ContactSection = ({ user }) => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', query: '' });
   const [status, setStatus] = useState('idle');
@@ -266,7 +266,7 @@ const ContactSection = ({ user }) => {
                             <Phone size={16} />
                         </div>
                         <div>
-                            <div className="text-gray-900 font-medium">+91 9717041202</div>
+                            <div className="text-gray-900 font-medium">+91 79825 89704</div>
                             <div className="text-xs text-gray-400">Mon-Fri, 10am - 6pm</div>
                         </div>
                     </div>
@@ -324,8 +324,6 @@ const ContactSection = ({ user }) => {
     </section>
   );
 };
-
-
 
 
 

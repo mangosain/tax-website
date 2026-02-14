@@ -21,6 +21,18 @@ const ServicesSection = () => {
         icon: <PieChart size={20} />,
         title: "Smart Investing",
         desc: "Strategic guidance on Section 80C, 80D, and beyond to grow wealth while cutting tax liabilities."
+    },{
+        icon: <PieChart size={20} />,
+        title: "Smart Investing",
+        desc: "Strategic guidance on Section 80C, 80D, and beyond to grow wealth while cutting tax liabilities."
+    },{
+        icon: <PieChart size={20} />,
+        title: "Smart Investing",
+        desc: "Strategic guidance on Section 80C, 80D, and beyond to grow wealth while cutting tax liabilities."
+    },{
+        icon: <PieChart size={20} />,
+        title: "Smart Investing",
+        desc: "Strategic guidance on Section 80C, 80D, and beyond to grow wealth while cutting tax liabilities."
     }
   ];
 
