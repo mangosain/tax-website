@@ -79,7 +79,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [scrolled, setScrolled] = useState(false);
 
-  // --- AUTH SETUP ---
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -196,19 +195,28 @@ const App = () => {
 
 
 const ContactSection = ({ user }) => {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', query: '' });
+  const [form, setForm] = useState({ 
+    firstname: '',
+    lastname: '',
+    email: '', 
+    phone: '', 
+    subject: '', 
+    query: '' 
+  });
   const [status, setStatus] = useState('idle');
 
-  // Load EmailJS SDK
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
     script.async = true;
     document.body.appendChild(script);
-    return () => { if (document.body.contains(script)) document.body.removeChild(script); };
+    return () => { 
+      if (document.body.contains(script)) document.body.removeChild(script); 
+    };
   }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => 
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const sendEmail = async (e) => {
     e.preventDefault();
@@ -216,36 +224,82 @@ const ContactSection = ({ user }) => {
 
     let currentUser = auth.currentUser;
     if (!currentUser) {
-        try {
-            const result = await signInAnonymously(auth);
-            currentUser = result.user;
-        } catch (err) { console.error("JIT Auth failed:", err); }
+      try {
+        const result = await signInAnonymously(auth);
+        currentUser = result.user;
+      } catch (err) { 
+        console.error("JIT Auth failed:", err); 
+      }
     }
 
     if (currentUser) {
-        try {
-            const now = new Date();
-            const ticketNumber = now.getTime(); 
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'inquiries'), {
-                name: form.name, email: form.email, subject: form.subject, query: form.query,
-                ticketNumber: ticketNumber, readableDate: now.toLocaleDateString(), readableTime: now.toLocaleTimeString(),
-                createdAt: serverTimestamp(), userId: currentUser.uid
-            });
-        } catch (error) { console.error("DB Error: ", error); }
+      try {
+        const now = new Date();
+        const ticketNumber = now.getTime(); 
+        await addDoc(
+          collection(db, 'artifacts', appId, 'public', 'data', 'inquiries'),
+          {
+            firstname: form.firstname,
+            lastname: form.lastname,
+            email: form.email,
+            phone: form.phone, // ✅ Added phone
+            subject: form.subject,
+            query: form.query,
+            ticketNumber: ticketNumber,
+            readableDate: now.toLocaleDateString(),
+            readableTime: now.toLocaleTimeString(),
+            createdAt: serverTimestamp(),
+            userId: currentUser.uid
+          }
+        );
+      } catch (error) { 
+        console.error("DB Error: ", error); 
+      }
     }
 
     const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
     const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
     const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-    const templateParams = { email: form.email, name: form.name, title: form.subject, message: form.query, reply_to: form.email };
+    const templateParams = { 
+      email: form.email, 
+      firstname: form.firstname,
+      lastname: form.lastname,
+      phone: form.phone,
+      title: form.subject, 
+      message: form.query, 
+      reply_to: form.email 
+    };
 
     if (window.emailjs) {
       window.emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
-        .then(() => { setStatus('success'); setForm({ name: '', email: '', subject: '', query: '' }); })
-        .catch((err) => { alert(`Failed to send email. Error: ${err.text}`); setStatus('idle'); });
+        .then(() => { 
+          setStatus('success'); 
+          setForm({ 
+            firstname: '',
+            lastname: '', 
+            email: '', 
+            phone: '', 
+            subject: '', 
+            query: '' 
+          }); 
+        })
+        .catch((err) => { 
+          alert(`Failed to send email. Error: ${err.text}`); 
+          setStatus('idle'); 
+        });
     } else {
-        setTimeout(() => { setStatus('success'); setForm({ name: '', email: '', subject: '', query: '' }); }, 2000);
+      setTimeout(() => { 
+        setStatus('success'); 
+        setForm({ 
+          firstname: '',
+          lastname: '', 
+          email: '', 
+          phone: '', 
+          subject: '', 
+          query: '' 
+        }); 
+      }, 2000);
     }
   };
 
@@ -254,76 +308,128 @@ const ContactSection = ({ user }) => {
       <div className="max-w-6xl mx-auto px-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden grid lg:grid-cols-2">
             
-            <div className="p-10 lg:p-12 bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-200">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Information</h2>
-                <p className="text-gray-500 text-sm mb-10 leading-relaxed">
-                    Ready to optimize your finances? Fill out the form or reach out directly via the details below.
-                </p>
+          <div className="p-10 lg:p-12 bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-200"> <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Information</h2> <p className="text-gray-500 text-sm mb-10 leading-relaxed"> Ready to optimize your finances? Fill out the form or reach out directly via the details below. </p> <div className="space-y-6 text-sm"> <div className="flex items-center gap-4"> <div className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[rgb(83,154,248)]"> <Phone size={16} /> </div> <div> <div className="text-gray-900 font-medium">+91 79825 89704</div> <div className="text-xs text-gray-400">Mon-Fri, 10am - 6pm</div> </div> </div> <div className="flex items-center gap-4"> <div className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[rgb(83,154,248)]"> <Send size={16} /> </div> <div> <div className="text-gray-900 font-medium">wisetaxmanwork@gmail.com</div> <div className="text-xs text-gray-400">Response within 48h</div> </div> </div> </div> </div>
 
-                <div className="space-y-6 text-sm">
-                    <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[rgb(83,154,248)]">
-                            <Phone size={16} />
-                        </div>
-                        <div>
-                            <div className="text-gray-900 font-medium">+91 79825 89704</div>
-                            <div className="text-xs text-gray-400">Mon-Fri, 10am - 6pm</div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-[rgb(83,154,248)]">
-                            <Send size={16} />
-                        </div>
-                        <div>
-                            <div className="text-gray-900 font-medium">wisetaxmanwork@gmail.com</div>
-                            <div className="text-xs text-gray-400">Response within 48h</div>
-                        </div>
-                    </div>
+          <div className="p-10 lg:p-12">
+            {status === 'success' ? (
+              <div className="h-full flex flex-col items-center justify-center text-center"> <div className="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4"> <CheckCircle size={24} /> </div> <h3 className="text-lg font-bold text-gray-900 mb-2">Inquiry Received</h3> <p className="text-gray-500 mb-6 text-sm">We will review your details shortly.</p> <button onClick={() => setStatus('idle')} className="text-[rgb(83,154,248)] font-medium hover:underline text-sm">Send New Message</button> </div>
+            ) : (
+              <form onSubmit={sendEmail} className="space-y-5">
+                
+                {/* Name, Email, Phone */}
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+                  
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">
+                      First Name
+                    </label>
+                    <input
+                      required
+                      name="firstname"
+                      value={form.firstname}
+                      onChange={handleChange}
+                      type="text"
+                      className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm"
+                      placeholder="First Name"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">
+                      Last Name
+                    </label>
+                    <input
+                      required
+                      name="lastname"
+                      value={form.lastname}
+                      onChange={handleChange}
+                      type="text"
+                      className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm"
+                      placeholder="Last Name"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">
+                      Email
+                    </label>
+                    <input
+                      required
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      type="email"
+                      className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm"
+                      placeholder="Email Address"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">
+                      Phone
+                    </label>
+                    <input
+                      required
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      type="tel"
+                      className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm"
+                      placeholder="Phone Number"
+                    />
+                  </div>
+
                 </div>
-            </div>
 
-            <div className="p-10 lg:p-12">
-                {status === 'success' ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center">
-                        <div className="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4">
-                            <CheckCircle size={24} />
-                        </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">Inquiry Received</h3>
-                        <p className="text-gray-500 mb-6 text-sm">We will review your details shortly.</p>
-                        <button onClick={() => setStatus('idle')} className="text-[rgb(83,154,248)] font-medium hover:underline text-sm">Send New Message</button>
-                    </div>
-                ) : (
-                    <form onSubmit={sendEmail} className="space-y-5">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase">Name</label>
-                                <input required name="name" value={form.name} onChange={handleChange} type="text" className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm" placeholder="Full Name" />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase">Email</label>
-                                <input required name="email" value={form.email} onChange={handleChange} type="email" className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm" placeholder="Email Address" />
-                            </div>
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-500 uppercase">Subject</label>
-                            <input required name="subject" value={form.subject} onChange={handleChange} type="text" className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm" placeholder="Inquiry Topic" />
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-500 uppercase">Message</label>
-                            <textarea required name="query" value={form.query} onChange={handleChange} rows="4" className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all resize-none text-sm" placeholder="How can we assist you?"></textarea>
-                        </div>
-                        <button disabled={status === 'sending'} type="submit" className="w-full py-3 bg-[rgb(83,154,248)] text-white font-bold rounded hover:bg-blue-600 transition-colors text-sm">
-                            {status === 'sending' ? 'Sending...' : 'Submit Inquiry'}
-                        </button>
-                    </form>
-                )}
-            </div>
+                {/* Subject */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-gray-500 uppercase">
+                    Subject
+                  </label>
+                  <input
+                    required
+                    name="subject"
+                    value={form.subject}
+                    onChange={handleChange}
+                    type="text"
+                    className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all text-sm"
+                    placeholder="Inquiry Topic"
+                  />
+                </div>
 
+                {/* Message */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-gray-500 uppercase">
+                    Message
+                  </label>
+                  <textarea
+                    required
+                    name="query"
+                    value={form.query}
+                    onChange={handleChange}
+                    rows="4"
+                    className="w-full p-2.5 bg-white rounded border border-gray-300 focus:border-[rgb(83,154,248)] focus:ring-1 focus:ring-[rgb(83,154,248)] outline-none transition-all resize-none text-sm"
+                    placeholder="How can we assist you?"
+                  ></textarea>
+                </div>
+
+                <button
+                  disabled={status === 'sending'}
+                  type="submit"
+                  className="w-full py-3 bg-[rgb(83,154,248)] text-white font-bold rounded hover:bg-blue-600 transition-colors text-sm"
+                >
+                  {status === 'sending' ? 'Sending...' : 'Submit Inquiry'}
+                </button>
+
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
 
 
 
