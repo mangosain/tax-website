@@ -234,22 +234,22 @@ const ContactSection = ({ user }) => {
 
     if (currentUser) {
       try {
-        const now = new Date();
-        const ticketNumber = now.getTime(); 
+        const ticketNumber = new Date().getTime(); 
         await addDoc(
           collection(db, 'artifacts', appId, 'public', 'data', 'inquiries'),
           {
             firstname: form.firstname,
             lastname: form.lastname,
             email: form.email,
-            phone: form.phone, // ✅ Added phone
+            phone: form.phone,
             subject: form.subject,
             query: form.query,
             ticketNumber: ticketNumber,
-            readableDate: now.toLocaleDateString(),
-            readableTime: now.toLocaleTimeString(),
             createdAt: serverTimestamp(),
-            userId: currentUser.uid
+            userId: currentUser.uid,
+            status: 'new',
+            note: '',
+            lastUpdate: serverTimestamp()
           }
         );
       } catch (error) { 
@@ -429,8 +429,5 @@ const ContactSection = ({ user }) => {
     </section>
   );
 };
-
-
-
 
 export default App;
